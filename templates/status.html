@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>打印状态</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <h1>打印状态</h1>
+  <a class="sub link" href="/">← 再打一份</a>
+</header>
+
+<main class="card">
+  <div class="status-head">
+    <span id="badge" class="badge queued">排队中</span>
+    <span id="message" class="msg">正在排队…</span>
+  </div>
+
+  <dl class="meta">
+    <div><dt>文件</dt><dd id="mFile">-</dd></div>
+    <div><dt>打印机</dt><dd id="mPrinter">-</dd></div>
+    <div><dt>方向 / 份数</dt><dd id="mOrient">-</dd></div>
+    <div><dt>页码范围</dt><dd id="mPages">-</dd></div>
+    <div><dt>双面</dt><dd id="mDuplex">-</dd></div>
+    <div id="mSlidesRow"><dt>每张纸</dt><dd id="mSlides">-</dd></div>
+    <div><dt>提交时间</dt><dd id="mTime">-</dd></div>
+  </dl>
+
+  <div id="alert" class="alert hidden"></div>
+
+  <h3 class="log-title">处理日志</h3>
+  <pre id="log" class="log">等待服务器处理…</pre>
+
+  <div class="actions">
+    <button id="cancelBtn" class="btn ghost hidden" type="button">取消任务</button>
+    <a href="/" class="btn ghost">返回首页</a>
+  </div>
+</main>
+
+<script>window.JOB_ID = "{{ job_id }}";</script>
+<script src="{{ url_for('static', filename='status.js') }}"></script>
+</body>
+</html>

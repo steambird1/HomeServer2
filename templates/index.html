@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>局域网打印</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <h1>局域网打印</h1>
+  <span class="sub">选文件 → 设参数 → 提交 → 到打印机取件</span>
+</header>
+
+<main class="card">
+  <form id="printForm" autocomplete="off">
+    <!-- 文件 -->
+    <div id="drop" class="drop">
+      <input type="file" id="file" name="file"
+             accept=".doc,.docx,.txt,.xls,.xlsx,.ppt,.pptx,.pptm,.pps,.ppsx,.pdf" hidden>
+      <div id="dropHint" class="drop-inner">
+        <div class="drop-icon">＋</div>
+        <p class="drop-title">点击选择文件，或把文件拖到这里</p>
+        <p class="drop-hint">支持 .doc .docx .txt .xls .xlsx .ppt .pptx .pdf，最大 {{ max_mb }} MB</p>
+      </div>
+      <div id="fileInfo" class="file-info hidden">
+        <span id="fileName" class="fname"></span>
+        <span id="fileSize" class="fsize"></span>
+        <button type="button" id="clearFile" class="link">更换</button>
+      </div>
+    </div>
+
+    <!-- 打印机 -->
+    <label class="field full">
+      <span class="label">打印机</span>
+      <select id="printer" required>
+        <option value="">正在读取打印机列表…</option>
+      </select>
+    </label>
+
+    <div class="grid">
+      <label class="field">
+        <span class="label">份数</span>
+        <input type="number" id="copies" value="1" min="1" max="99">
+      </label>
+      <label class="field">
+        <span class="label">页码范围</span>
+        <input type="text" id="pages" placeholder="如 1-3,5,8-（留空=全部）">
+      </label>
+      <label class="field">
+        <span class="label">双面</span>
+        <select id="duplex">
+          <option value="one">单面</option>
+          <option value="long">双面（长边翻转）</option>
+          <option value="short">双面（短边翻转）</option>
+        </select>
+      </label>
+      <div class="field">
+        <span class="label">方向</span>
+        <div class="seg">
+          <label class="seg-item"><input type="radio" name="orientation" value="portrait" checked><span>纵向</span></label>
+          <label class="seg-item"><input type="radio" name="orientation" value="landscape"><span>横向</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid hidden" id="pptRow">
+      <label class="field">
+        <span class="label">每张纸打印</span>
+        <select id="slidesPerPage">
+          <option value="1">1 张幻灯片（整页）</option>
+          <option value="2">2 张幻灯片</option>
+          <option value="3">3 张幻灯片</option>
+          <option value="4">4 张幻灯片</option>
+          <option value="6">6 张幻灯片</option>
+          <option value="9">9 张幻灯片</option>
+        </select>
+      </label>
+      <label class="field">
+        <span class="label">讲义排列</span>
+        <select id="handoutOrder">
+          <option value="horizontal">横向优先</option>
+          <option value="vertical">纵向优先</option>
+        </select>
+      </label>
+    </div>
+
+    <label class="check hidden" id="sheetRow">
+      <input type="checkbox" id="firstSheetOnly"> 仅打印第一张工作表
+    </label>
+
+    <p class="tip hidden" id="pptTip">讲义（每张纸多张幻灯片）无法转成 PDF，
+      打印时会直接用 PowerPoint 输出；双面只能依赖打印机的默认双面设置。</p>
+
+    <div id="alert" class="alert hidden"></div>
+
+    <button type="submit" id="submitBtn" class="btn">提交打印</button>
+
+    {% if not sumatra %}
+    <p class="tip warn">未检测到 SumatraPDF.exe，PDF 打印不可用（不影响 Office 文件）。</p>
+    {% endif %}
+    {% if not ps %}
+    <p class="tip warn">未检测到 PowerShell 打印管理模块，双面选项可能不生效，请以打印机驱动默认设置打印。</p>
+    {% endif %}
+  </form>
+</main>
+
+<footer class="foot">文件仅保存在打印服务器本机，任务完成后数小时自动清理。</footer>
+
+<script src="{{ url_for('static', filename='index.js') }}"></script>
+</body>
+</html>
